@@ -15,7 +15,7 @@ require('dotenv').config();
 const client = new MongoClient(process.env.FINAL_URL);
 const app = express();
 const port = process.env.PORT || 1337;
-const DbName = "CourseProject";
+const dbName = "CourseProject";
 
 //use everything from public folder
 app.use(express.static('public'))
@@ -37,10 +37,6 @@ app.get('/', (req, res) => {
     res.status(300).redirect('/api-info.html');
 })
 
-app.listen(port, () => {
-    console.log(`API running at at http://localhost:${port}`)
-})
-
 // Add UserData
 app.post('/challenges/send', async (req, res) => {
     if (!req.body.name || !req.body.points || !req.body.course || !req.body.session) {
@@ -50,7 +46,7 @@ app.post('/challenges/send', async (req, res) => {
 
     try {
         await client.connect();
-        const challengeCollect = client.db("Session7").collection("Challenges");
+        const challengeCollect = client.db(dbName).collection("userData");
 
         const db = await challengeCollect.findOne({
             _id: req.body._id
@@ -84,3 +80,7 @@ app.post('/challenges/send', async (req, res) => {
         await client.close();
     }
 });
+
+app.listen(port, () => {
+    console.log(`API running at at http://localhost:${port}`)
+})
