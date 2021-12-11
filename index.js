@@ -42,7 +42,7 @@ app.listen(port, () => {
 })
 
 // Add UserData
-app.post('/userData/send', async (req, res) => {
+app.post('/challenges/send', async (req, res) => {
     if (!req.body.email || !req.body.password) {
         res.status(400).send("Bad request, missing: email or password!");
         return;
@@ -50,28 +50,25 @@ app.post('/userData/send', async (req, res) => {
 
     try {
         await client.connect();
-        const userdata = client.db(DbName).collection("userData");
+        const dataCollect = client.db(DbName).collection("userData");
 
-        const db = await userdata.findOne({
-            id: req.body._id
+        const db = await dataCollect.findOne({
+            _id: req.body._id
         });
-
         if (db) {
             res.status(400).send("Bad request: data already exists with id " + req.body.id);
             return;
         }
 
-        //Create userData 
-        let newData = {
-            id: req.body.id,
+        let userdata = {
+            _id: req.body.id,
             email: req.body.email,
-            password: req.body.password,
+            password: req.body.password
         }
-        //push the userData
-        let insertChallenge = await userdata.insertOne(newData);
 
+        let insertData = await dataCollect.insertOne(userdata);
 
-        res.status(201).send(`Data succesfully saved with name ${req.body.name}`);
+        res.status(201).send(`Data succesfully saved with name ${req.body.email}`);
         return;
 
 
