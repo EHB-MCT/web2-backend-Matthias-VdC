@@ -43,8 +43,8 @@ app.listen(port, () => {
 
 // Add UserData
 app.post('/userData/send', async (req, res) => {
-    if (!req.body.name || !req.body.points || !req.body.course || !req.body.session) {
-        res.status(400).send("Bad request, missing: id, name, points, course or session!");
+    if (!req.body.email || !req.body.password) {
+        res.status(400).send("Bad request, missing: email or password!");
         return;
     }
 
