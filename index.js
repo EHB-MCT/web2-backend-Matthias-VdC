@@ -92,12 +92,10 @@ app.post('/userdata/register', async (req, res) => {
             return;
         }
 
-        const hash = bcrypt.hash(req.body.password, 10);
-
         let newUser = {
             _id: req.body.id,
             email: req.body.email,
-            password: hash,
+            password: bcrypt.hash(req.body.password, 10)
         }
 
         let insertData = await dataCollect.insertOne(newUser);
