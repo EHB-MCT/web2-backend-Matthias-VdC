@@ -129,14 +129,14 @@ app.post('/userdata/login', async (req, res) => {
 
         if (userDataCollect) {
             //returns true or false
-            const validateHash = await bcrypt.compare(password, userDataCollect.password);
+            const validateHash = await bcrypt.compare(req.body.password, userDataCollect.hash);
             if (validateHash) {
-                res.status(200).json('Valid Email and Password!')
+                res.status(200).send('Valid Email and Password!')
             } else {
-                res.json('Wrong password!')
+                res.send('Wrong password!')
             }
         } else {
-            res.status(404).json('User not found');
+            res.status(404).send('User not found');
         }
 
     } catch (err) {
