@@ -4,7 +4,7 @@
 //Also used / adapted code and structure from previous exercise: "Full Stack Teamwork"
 //Source: https://github.com/EHB-MCT/web2-groupproject-backend-team-sam
 
-//Registering user and login user, hashing password used youtube video
+//Hashing password used youtube video
 //Source: https://www.youtube.com/watch?v=9yIrM7eZwUE   (Channel: https://www.youtube.com/channel/UCDdAZtsEcn3IxBaDVjkjBGg)
 
 require('dotenv').config();
@@ -73,20 +73,39 @@ app.get('/userdata/get', async (req, res) => {
     }
 });
 
-
-
+//Add UserData
 app.post('/userdata/register', async (req, res) => {
+    if (!req.body.email || !req.body.password) {
+        res.status(400).send("Bad request, missing: email or password!");
+        return;
+    }
+
     try {
-        const {
-            email,
-            password
-        } = req.body;
-        const hash = bcrypt.hash(password, 15);
-        await db(dbName).collection('userData').insert({
-            email: email,
-            hash: hash
+        await client.connect();
+        const dataCollect = client.db(dbName).collection("userData");
+
+        const db = await dataCollect.findOne({
+            _id: req.body._id
         });
-        res.status(200).send("Data hashed and saved succesfully!")
+        if (db) {
+            res.status(400).send("Bad request: data already exists with id " + req.body.id);
+            return;
+        }
+
+        const hash = bcrypt.hash(req.body.password, 10);
+
+        let newUser = {
+            _id: req.body.id,
+            email: req.body.email,
+            password: hash,
+        }
+
+        let insertData = await dataCollect.insertOne(newUser);
+
+        res.status(201).send(`Data succesfully saved with email ${req.body.email}`);
+        return;
+
+
     } catch (err) {
         console.log(err);
         res.status(500).send({
@@ -94,53 +113,9 @@ app.post('/userdata/register', async (req, res) => {
             value: error
         });
     } finally {
-        //Closes the connection if it doesn't work
         await client.close();
     }
 });
-
-
-//Add UserData
-// app.post('/userdata/register', async (req, res) => {
-//     if (!req.body.email || !req.body.password) {
-//         res.status(400).send("Bad request, missing: email or password!");
-//         return;
-//     }
-
-//     try {
-//         await client.connect();
-//         const dataCollect = client.db(dbName).collection("userData");
-
-//         const db = await dataCollect.findOne({
-//             _id: req.body._id
-//         });
-//         if (db) {
-//             res.status(400).send("Bad request: data already exists with id " + req.body.id);
-//             return;
-//         }
-
-//         let newUser = {
-//             _id: req.body.id,
-//             email: req.body.email,
-//             password: req.body.password,
-//         }
-
-//         let insertData = await dataCollect.insertOne(newUser);
-
-//         res.status(201).send(`Data succesfully saved with email ${req.body.email}`);
-//         return;
-
-
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).send({
-//             error: 'Something went wrong',
-//             value: error
-//         });
-//     } finally {
-//         await client.close();
-//     }
-// });
 
 app.listen(port, () => {
     console.log(`API running at at http://localhost:${port}`)
