@@ -21,8 +21,6 @@ const client = new MongoClient(process.env.FINAL_URL);
 const app = express();
 const port = process.env.PORT || 1337;
 const dbName = "CourseProject";
-//getRandomValues
-var bcrypt = dcodeIO.bcrypt;
 
 //use everything from public folder
 app.use(express.static('public'))
