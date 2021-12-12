@@ -1,6 +1,6 @@
 //Basic setup done by help from Mike Derycke's youtube
 //Source: https://www.youtube.com/watch?v=p3O6YcUUJmE&t=201s   (Channel: https://www.youtube.com/channel/UChlEg91ycOHnDSicCluhbDA)
-//Also used code and structure from previous exercise: "Full Stack Teamwork"
+//Also used / adapted code and structure from previous exercise: "Full Stack Teamwork"
 //Source: https://github.com/EHB-MCT/web2-groupproject-backend-team-sam
 
 const {
@@ -96,7 +96,7 @@ app.post('/userdata/send', async (req, res) => {
 
         let insertData = await dataCollect.insertOne(newUser);
 
-        res.status(201).send(`Data succesfully saved with name ${req.body.name}`);
+        res.status(201).send(`Data succesfully saved with email ${req.body.email}`);
         return;
 
 
