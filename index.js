@@ -23,7 +23,7 @@ const port = process.env.PORT || 1337;
 const dbName = "CourseProject";
 
 //use everything from public folder
-app.use(express.static('public'))
+app.use(express.static('public'));
 app.use(bodyParser.json());
 //THE FLOODGATES ARE OPEN
 app.use(cors());
@@ -73,7 +73,7 @@ app.get('/userdata/get', async (req, res) => {
     }
 });
 
-//Add UserData
+//Register UserData
 app.post('/userdata/register', async (req, res) => {
     if (!req.body.email || !req.body.password) {
         res.status(400).send("Bad request, missing: email or password!");
@@ -103,6 +103,41 @@ app.post('/userdata/register', async (req, res) => {
         res.status(201).send(`User Data succesfully saved!`);
         return;
 
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            error: 'Something went wrong',
+            value: error
+        });
+    } finally {
+        await client.close();
+    }
+});
+
+
+app.post('/userdata/login', async (req, res) => {
+    if (!req.body.email || !req.body.password) {
+        res.status(400).send("Bad request, missing: email or password!");
+        return;
+    }
+
+    try {
+        await client.connect();
+        const userDataCollect = client.db(dbName).collection("userData").first('*').where({
+            email: email
+        });
+
+        if (userDataCollect) {
+            //returns true or false
+            const validateHash = await bcrypt.compare(password, user.hash);
+            if (validateHash) {
+                res.status(200).json('Valid Email and Password!')
+            } else {
+                res.json('Wrong password!')
+            }
+        } else {
+            res.status(404).json('User not found');
+        }
 
     } catch (err) {
         console.log(err);
