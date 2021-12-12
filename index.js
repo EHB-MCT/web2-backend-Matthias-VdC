@@ -124,7 +124,7 @@ app.post('/userdata/login', async (req, res) => {
     try {
         await client.connect();
         const userDataCollect = client.db(dbName).collection("userData").first('*').where({
-            email: email
+            email: req.body.email
         });
 
         if (userDataCollect) {
