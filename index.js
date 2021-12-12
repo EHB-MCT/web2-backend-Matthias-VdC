@@ -95,12 +95,12 @@ app.post('/userdata/register', async (req, res) => {
         let newUser = {
             _id: req.body.id,
             email: req.body.email,
-            password: bcrypt.hash(req.body.password, 10)
+            password: await bcrypt.hash(req.body.password, 10)
         }
 
         let insertData = await dataCollect.insertOne(newUser);
 
-        res.status(201).send(`Data succesfully saved with email ${req.body.email}`);
+        res.status(201).send(`User Data succesfully saved!`);
         return;
 
 
