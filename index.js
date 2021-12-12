@@ -21,6 +21,7 @@ const client = new MongoClient(process.env.FINAL_URL);
 const app = express();
 const port = process.env.PORT || 1337;
 const dbName = "CourseProject";
+const collectionName = "userData";
 
 //use everything from public folder
 app.use(express.static('public'));
@@ -49,9 +50,7 @@ app.get('/userdata/get', async (req, res) => {
         //connect to the database
         await client.connect();
         const db = client.db(dbName);
-
-        // Use the collection "Session7"
-        const col = db.collection("userData");
+        const col = db.collection(collectionName);
 
         // Find document
         const myDoc = await col.find({}).toArray();
@@ -82,7 +81,7 @@ app.post('/userdata/register', async (req, res) => {
 
     try {
         await client.connect();
-        const dataCollect = client.db(dbName).collection("userData");
+        const dataCollect = client.db(dbName).collection(collectionName);
 
         const db = await dataCollect.findOne({
             _id: req.body._id
@@ -123,20 +122,21 @@ app.post('/userdata/login', async (req, res) => {
 
     try {
         await client.connect();
-        const userDataCollect = client.db(dbName).collection("userData").where({
-            "email": "req.body.email"
-        });
 
-        if (userDataCollect) {
-            //returns true or false
-            const validateHash = await bcrypt.compare(req.body.password, userDataCollect.password);
-            if (validateHash) {
-                res.status(200).send('Valid Email and Password!')
+        const userData = await client.db(dbName).collection(collectionName).findOne({
+            email: req.body.email
+        });
+        console.log(userData);
+        if (userData) {
+            const hashedPass = await bcrypt.compare(req.body.password, userData.password);
+            if (hashedPass) {
+
+                res.send("Email and Password are correct");
             } else {
-                res.send('Wrong password!')
+                res.send("Wrong username or password!");
             }
         } else {
-            res.status(404).send('User not found');
+            res.send("Missing username or password!");
         }
 
     } catch (err) {
