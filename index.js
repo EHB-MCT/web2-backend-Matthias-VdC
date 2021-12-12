@@ -129,7 +129,7 @@ app.post('/userdata/login', async (req, res) => {
 
         if (userDataCollect) {
             //returns true or false
-            const validateHash = await bcrypt.compare(password, user.hash);
+            const validateHash = await bcrypt.compare(password, userDataCollect.hash);
             if (validateHash) {
                 res.status(200).json('Valid Email and Password!')
             } else {
