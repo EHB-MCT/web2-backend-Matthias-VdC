@@ -123,6 +123,10 @@ app.post('/userdata/login', async (req, res) => {
     try {
         await client.connect();
 
+        const sending = {
+            login: true
+        }
+
         const userData = await client.db(dbName).collection(collectionName).findOne({
             email: req.body.email
         });
@@ -131,7 +135,8 @@ app.post('/userdata/login', async (req, res) => {
             const hashedPass = await bcrypt.compare(req.body.password, userData.password);
             if (hashedPass) {
 
-                res.send("Email and Password are correct");
+                res.send(sending);
+
             } else {
                 res.send("Wrong username or password!");
             }
