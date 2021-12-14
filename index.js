@@ -120,6 +120,8 @@ app.post('/userdata/login', async (req, res) => {
         return;
     }
 
+
+
     try {
         await client.connect();
 
@@ -130,7 +132,7 @@ app.post('/userdata/login', async (req, res) => {
         const userData = await client.db(dbName).collection(collectionName).findOne({
             email: req.body.email
         });
-        console.log(userData);
+        res.send(userData);
         if (userData) {
             const hashedPass = await bcrypt.compare(req.body.password, userData.password);
             if (hashedPass) {
