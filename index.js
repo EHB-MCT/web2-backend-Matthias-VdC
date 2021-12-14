@@ -125,14 +125,16 @@ app.post('/userdata/login', async (req, res) => {
     try {
         await client.connect();
 
-        const sending = {
-            login: true
-        }
 
         const userData = await client.db(dbName).collection(collectionName).findOne({
             email: req.body.email
         });
-        res.send(userData);
+
+
+        const sending = {
+            login: true,
+            id: userData._id
+        }
         if (userData) {
             const hashedPass = await bcrypt.compare(req.body.password, userData.password);
             if (hashedPass) {
