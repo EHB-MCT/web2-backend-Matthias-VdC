@@ -84,10 +84,11 @@ app.post('/userdata/register', async (req, res) => {
         const dataCollect = client.db(dbName).collection(collectionName);
 
         const db = await dataCollect.findOne({
-            _id: req.body._id
+            email: req.body.email
         });
+
         if (db) {
-            res.status(400).send("Bad request: data already exists with id " + req.body.id);
+            res.status(400).send("Bad request: user already exists with email:" + req.body.email);
             return;
         }
 
@@ -120,16 +121,12 @@ app.post('/userdata/login', async (req, res) => {
         return;
     }
 
-
-
     try {
         await client.connect();
-
 
         const userData = await client.db(dbName).collection(collectionName).findOne({
             email: req.body.email
         });
-
 
         const sending = {
             login: true,
