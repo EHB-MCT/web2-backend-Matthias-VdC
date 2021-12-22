@@ -81,7 +81,7 @@ app.get('/userdata/get/:id', async (req, res) => {
 
         //help to understand SQL comparison src:  https://docs.mongodb.com/manual/reference/sql-comparison/
         const findData = collection.find({
-            _id: req.params.id
+            _id: req.body.id
         })
 
         console.log(findData);
