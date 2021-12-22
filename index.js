@@ -73,18 +73,15 @@ app.get('/userdata/get', async (req, res) => {
 });
 
 //Get one userData
-app.get('/userdata/getone/:id', async (req, res) => {
+app.get('/userdata/get/one/:id', async (req, res) => {
     try {
-        //connect to the database
         await client.connect();
         const collection = client.db(dbName).collection(collectionName);
 
         const query = {
             _id: ObjectId(req.params.id)
         };
-
         const found = await collection.findOne(query);
-
         if (found) {
             res.status(200).send(found);
             return;
