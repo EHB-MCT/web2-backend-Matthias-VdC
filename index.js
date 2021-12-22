@@ -79,13 +79,13 @@ app.get('/userdata/get/:id', async (req, res) => {
         await client.connect();
         const collection = client.db(dbName).collection(collectionName);
 
-        const query = {
+        //help to understand SQL comparison src:  https://docs.mongodb.com/manual/reference/sql-comparison/
+        const findData = collection.find({
             _id: req.params.id
-        };
+        })
 
-        const found = collection.find(query);
-        console.log(found);
-        res.status(200).send(found);
+        console.log(findData);
+        res.status(200).send(findData);
 
     } catch (err) {
         console.log(err);
