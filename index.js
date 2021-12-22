@@ -85,7 +85,7 @@ app.get('/userdata/get/:id', async (req, res) => {
         })
 
         console.log(findData);
-        res.status(200).send(findData);
+        res.status(200).send(req.body);
 
     } catch (err) {
         console.log(err);
