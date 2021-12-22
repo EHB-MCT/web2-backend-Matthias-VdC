@@ -83,7 +83,7 @@ app.get('/userdata/get/:id', async (req, res) => {
             _id: req.params.id
         };
 
-        const found = collection.findOne(query);
+        const found = collection.findOne(query).toArray();
 
         if (found) {
             res.status(200).send(found);
