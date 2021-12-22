@@ -73,20 +73,24 @@ app.get('/userdata/get', async (req, res) => {
 });
 
 //Get one userData
-app.get('/userdata/get/:id', async (req, res) => {
+app.get('/userdata/getone/:id', async (req, res) => {
     try {
         //connect to the database
         await client.connect();
         const collection = client.db(dbName).collection(collectionName);
 
-        //help to understand SQL comparison src:  https://docs.mongodb.com/manual/reference/sql-comparison/
-        const findData = collection.findOne({
-            _id: req.body.id
-        })
+        const query = {
+            _id: ObjectId(req.params.id)
+        };
 
-        console.log(findData);
-        res.status(200).send(req.body);
+        const found = await collection.findOne(query);
 
+        if (found) {
+            res.status(200).send(found);
+            return;
+        } else {
+            res.status(400).send('Challenge could not found with id: ' + req.params.id);
+        }
     } catch (err) {
         console.log(err);
         res.status(500).send({
