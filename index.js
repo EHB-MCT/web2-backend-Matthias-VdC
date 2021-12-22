@@ -73,7 +73,7 @@ app.get('/userdata/get', async (req, res) => {
 });
 
 //Get one userData
-app.get('/userdata/get/:_id', async (req, res) => {
+app.get('/userdata/get/:id', async (req, res) => {
     try {
         //connect to the database
         await client.connect();
@@ -84,13 +84,8 @@ app.get('/userdata/get/:_id', async (req, res) => {
         };
 
         const found = collection.findOne(query).toArray();
+        res.status(200).send(found);
 
-        if (found) {
-            res.status(200).send(found);
-            return;
-        } else {
-            res.status(400).send('Challenge could not found with id: ' + req.params.id);
-        }
     } catch (err) {
         console.log(err);
         res.status(500).send({
