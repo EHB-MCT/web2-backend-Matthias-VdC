@@ -80,7 +80,7 @@ app.get('/userdata/get/:id', async (req, res) => {
         const collection = client.db(dbName).collection(collectionName);
 
         //help to understand SQL comparison src:  https://docs.mongodb.com/manual/reference/sql-comparison/
-        const findData = collection.find({
+        const findData = collection.findOne({
             _id: req.body.id
         })
 
