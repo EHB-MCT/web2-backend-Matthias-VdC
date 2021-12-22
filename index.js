@@ -73,7 +73,7 @@ app.get('/userdata/get', async (req, res) => {
 });
 
 //Get one userData
-app.get('/userdata/get/:id', async (req, res) => {
+app.get('/userdata/get/:_id', async (req, res) => {
     try {
         //connect to the database
         await client.connect();
