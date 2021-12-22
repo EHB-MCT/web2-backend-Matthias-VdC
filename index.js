@@ -72,9 +72,39 @@ app.get('/userdata/get', async (req, res) => {
     }
 });
 
+//Get one userData
+app.get('/challenges/getOne/:id', async (req, res) => {
+    try {
+        //connect to the database
+        await client.connect();
+        const collection = client.db(dbName).collection(collectionName);
+
+        const query = {
+            _id: ObjectId(req.params.id)
+        };
+
+        const found = await collection.findOne(query);
+
+        if (found) {
+            res.status(200).send(found);
+            return;
+        } else {
+            res.status(400).send('Challenge could not found with id: ' + req.params.id);
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            error: 'Something went wrong',
+            value: error
+        })
+    } finally {
+        await client.close();
+    }
+})
+
 //Register UserData
 app.post('/userdata/register', async (req, res) => {
-    if (!req.body.email || !req.body.password) {
+    if (!req.body.email || !req.body.password || !req.body.username) {
         res.status(400).send("Bad request, missing: email or password!");
         return;
     }
