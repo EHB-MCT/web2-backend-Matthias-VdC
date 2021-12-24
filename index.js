@@ -199,7 +199,7 @@ app.put('/userdata/change/name/:id', async (req, res) => {
 
         let update = {
             $set: {
-                name: req.body.name
+                username: req.body.username
             }
         };
 
