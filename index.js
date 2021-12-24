@@ -99,7 +99,7 @@ app.get('/userdata/get/one/:id', async (req, res) => {
     }
 })
 
-//Register UserData
+//Register userData
 app.post('/userdata/register', async (req, res) => {
     if (!req.body.email || !req.body.password || !req.body.username) {
         res.status(400).send("Bad request, missing: email or password!");
@@ -142,7 +142,7 @@ app.post('/userdata/register', async (req, res) => {
     }
 });
 
-
+//User verifies userData
 app.post('/userdata/login', async (req, res) => {
     if (!req.body.email || !req.body.password) {
         res.status(400).send("Bad request, missing: email or password!");
@@ -183,6 +183,67 @@ app.post('/userdata/login', async (req, res) => {
         await client.close();
     }
 });
+
+//Change userName
+app.put('/userdata/change/name/:id', async (req, res) => {
+    if (!req.body._id || !req.body.name) {
+        res.status(400).send("Bad request, missing: id, name, points, course or session!");
+        return;
+    }
+    try {
+        await client.connect();
+        const collection = client.db(dbName).collection(collectionName);
+        const query = {
+            _id: ObjectId(req.params.id)
+        };
+
+        let update = {
+            $set: {
+                name: req.body.name
+            }
+        };
+
+        const updateName = await collection.updateOne(query, update)
+        if (updateName) {
+            res.status(201).send(`Challenge with id "${req.body._id}" with succes updated!.`);
+            return;
+        } else {
+            res.status(400).send('Challenge could not found with id: ' + req.body._id);
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            error: 'Something went wrong',
+            value: error
+        });
+    } finally {
+        await client.close();
+    }
+});
+
+//Delete a user
+app.delete('/userdata/delete/:id', async (req, res) => {
+    try {
+        await client.connect();
+
+        const collection = client.db(dbName).collection(collectionName);
+
+        const query = {
+            _id: ObjectId(req.params.id)
+        };
+
+        await collection.deleteOne(query)
+        res.status(200).json({
+            succes: 'Succesfully deleted!',
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({
+            error: 'Something went wrong',
+            value: error
+        })
+    }
+})
 
 app.listen(port, () => {
     console.log(`API running at at http://localhost:${port}`)
