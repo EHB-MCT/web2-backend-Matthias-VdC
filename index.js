@@ -186,7 +186,7 @@ app.post('/userdata/login', async (req, res) => {
 
 //Change userName
 app.put('/userdata/change/name/:id', async (req, res) => {
-    if (!req.body.name) {
+    if (!req.body.username) {
         res.status(400).send("Bad request, missing: name");
         return;
     }
